@@ -49,9 +49,9 @@ async function initWeb3() {
         web3 = new Web3(window.web3.currentProvider);
         initContract();
     } else {
-        // Fallback to Infura (replace with your project ID)
-        web3 = new Web3('https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT_ID');
-        console.log('Connected to Sepolia testnet via Infura');
+        // Connect using Alchemy
+        web3 = new Web3(`https://eth-sepolia.g.alchemy.com/v2/whcuMhK5w-fHEupPPaegt`);
+        console.log('Connected to Sepolia testnet via Alchemy');
         initContract();
     }
 }

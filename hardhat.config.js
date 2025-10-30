@@ -1,12 +1,15 @@
 require("@nomicfoundation/hardhat-toolbox");
+require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.19",
+  defaultNetwork: "sepolia",
   networks: {
     sepolia: {
-      url: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID || 'YOUR_INFURA_PROJECT_ID'}`,
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : []
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+      chainId: 11155111,
+      accounts: [`${process.env.PRIVATE_KEY}`]
     }
   }
 };

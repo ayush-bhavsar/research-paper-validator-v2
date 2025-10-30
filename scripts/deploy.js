@@ -1,11 +1,16 @@
-const { ethers } = require("hardhat");
+const hre = require("hardhat");
 
 async function main() {
   console.log("Deploying PaperValidator contract...");
 
-  // Get the ContractFactory and Signers here
-  const PaperValidator = await ethers.getContractFactory("PaperValidator");
-  const paperValidator = await PaperValidator.deploy();
+  // Get the signer
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("Deploying with account:", deployer.address);
+
+  // Get the ContractFactory
+  const PaperValidator = await hre.ethers.getContractFactory("PaperValidator");
+  console.log("Deploying contract...");
+  const paperValidator = await PaperValidator.connect(deployer).deploy();
 
   await paperValidator.deployed();
 
