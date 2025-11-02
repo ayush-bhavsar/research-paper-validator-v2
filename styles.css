@@ -18,7 +18,7 @@ body {
     line-height: 1.6;
     color: #333;
     /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-    background: linear-gradient(135deg, black 50%, rgb(3, 20, 59) 50%);
+    background: linear-gradient(135deg, black 50%, rgb(1, 11, 32) 50%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
