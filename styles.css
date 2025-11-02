@@ -213,3 +213,18 @@ footer {
         padding: 1rem;
     }
 }
+
+#contributor{
+    border: 2px solid white;
+    padding: auto;
+    margin-top: 10px;
+    height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: black;
+}
+
+#built-by{
+    font-size: small;
+}
