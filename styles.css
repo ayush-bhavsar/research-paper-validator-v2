@@ -5,11 +5,20 @@
     box-sizing: border-box;
 }
 
+.momo-trust-display-regular {
+  font-family: "Momo Trust Display", sans-serif;
+  font-weight: 150; 
+  font-style:normal;
+}
+
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: "Momo Trust Display";    
     line-height: 1.6;
     color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    background: linear-gradient(145deg, black 45%, rgb(34, 1, 1) 15%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
