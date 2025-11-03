@@ -188,9 +188,159 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     }
 });
 
+// PDF preview variables
+let pdfDoc = null;
+let pageNum = 1;
+let pageRendering = false;
+let pageNumPending = null;
+let scale = 1.5;
+
+function renderPage(num) {
+    pageRendering = true;
+    pdfDoc.getPage(num).then(function(page) {
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+        const viewport = page.getViewport({scale: scale});
+
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+        };
+
+        const renderTask = page.render(renderContext);
+        renderTask.promise.then(function() {
+            pageRendering = false;
+            if (pageNumPending !== null) {
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
+        });
+    });
+
+    document.getElementById('currentPage').textContent = num;
+}
+
+function queueRenderPage(num) {
+    if (pageRendering) {
+        pageNumPending = num;
+    } else {
+        renderPage(num);
+    }
+}
+
+function showPdfPreview(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const typedarray = new Uint8Array(e.target.result);
+
+        pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+            pdfDoc = pdf;
+            document.getElementById('pageCount').textContent = pdf.numPages;
+            document.getElementById('pdfPreview').style.display = 'block';
+            renderPage(pageNum);
+        });
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// Handle drag and drop
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelector('.upload-area').classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelector('.upload-area').classList.remove('dragover');
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    document.querySelector('.upload-area').classList.remove('dragover');
+    
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length > 0 && files[0].type === 'application/pdf') {
+        handleFileSelect(files[0]);
+    }
+}
+
+function handleFileSelect(file) {
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = fileInfo.querySelector('.file-name');
+    const fileSize = fileInfo.querySelector('.file-size');
+
+    fileName.textContent = file.name;
+    fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    fileInfo.style.display = 'block';
+
+    showPdfPreview(file);
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     // Load PDF.js worker
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    
+    // Initialize Web3
     initWeb3();
+
+    // Set up PDF preview controls
+    document.getElementById('prevPage').addEventListener('click', () => {
+        if (pageNum <= 1) return;
+        pageNum--;
+        queueRenderPage(pageNum);
+    });
+
+    document.getElementById('nextPage').addEventListener('click', () => {
+        if (pageNum >= pdfDoc.numPages) return;
+        pageNum++;
+        queueRenderPage(pageNum);
+    });
+
+    // Set up drag and drop
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', handleDragOver);
+    dropZone.addEventListener('dragleave', handleDragLeave);
+    dropZone.addEventListener('drop', handleDrop);
+
+    // Handle file input change
+    document.getElementById('paperFile').addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    // Handle remove file
+    document.getElementById('removeFile').addEventListener('click', () => {
+        // Clear file input
+        const fileInput = document.getElementById('paperFile');
+        fileInput.value = '';
+        
+        // Hide file info and preview
+        document.getElementById('fileInfo').style.display = 'none';
+        document.getElementById('pdfPreview').style.display = 'none';
+        
+        // Reset PDF viewer
+        pdfDoc = null;
+        pageNum = 1;
+        pageRendering = false;
+        pageNumPending = null;
+        
+        // Reset upload area
+        const dropZone = document.getElementById('dropZone');
+        dropZone.classList.remove('dragover');
+        
+        // Clear the canvas
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
 });

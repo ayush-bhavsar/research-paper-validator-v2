@@ -7,17 +7,22 @@
     <link rel="stylesheet" href="styles.css">
 
 
-    <!--google font import-->
+    <!--Momo Trust Display-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display&display=swap" rel="stylesheet">
+
+    <!--Playfair Display-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Research Paper Validator</h1>
-            <p>Validate research papers using blockchain technology</p>
+            <h1 id="title">Research Paper Validator</h1>
+            <p id="tag-line">Validate research papers using blockchain technology</p>
         </header>
         
         <main>
@@ -25,8 +30,29 @@
                 <h2>Upload Research Paper</h2>
                 <form id="uploadForm">
                     <div class="form-group">
-                        <label for="paperFile">Select PDF file:</label>
-                        <input type="file" id="paperFile" accept=".pdf" required>
+                        <div class="upload-container">
+                            <div class="upload-area" id="dropZone">
+                                <i class="upload-icon"></i>
+                                <p>Drag and drop your PDF here or click to browse</p>
+                                <input type="file" id="paperFile" accept=".pdf" required>
+                            </div>
+                        </div>
+                        <div class="file-info" id="fileInfo" style="display: none;">
+                            <div class="file-details">
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                            </div>
+                            <button type="button" class="remove-file" id="removeFile" title="Remove file">×</button>
+                        </div>
+                    </div>
+                    <div class="preview-container" id="pdfPreview" style="display: none;">
+                        <h3>PDF Preview</h3>
+                        <div class="pdf-controls">
+                            <button type="button" id="prevPage" class="btn-sm">Previous</button>
+                            <span id="pageInfo">Page <span id="currentPage">1</span> of <span id="pageCount">1</span></span>
+                            <button type="button" id="nextPage" class="btn-sm">Next</button>
+                        </div>
+                        <canvas id="pdfCanvas"></canvas>
                     </div>
                     <button type="submit" class="btn">Validate Paper</button>
                 </form>
