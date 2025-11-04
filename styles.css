@@ -255,11 +255,11 @@ label {
 .remove-file {
     background: none;
     border: none;
-    color: #ff4444;
+    color: red;
     font-size: 1.5rem;
     cursor: pointer;
-    width: 30px;
-    height: 30px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     display: flex;
     align-items: center;
